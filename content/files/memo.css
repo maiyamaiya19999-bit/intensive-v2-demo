@@ -1,0 +1,115 @@
+/* Памятки кабинета интенсива maysoulme: те же цвета и шрифты, что в css/style.css. Один файл на все страницы content/files/*.html */
+@font-face{font-family:'Denistina';src:url(../../assets/fonts/Denistina.ttf) format('truetype');font-display:swap}
+:root{
+  color-scheme:light;
+  --milk:#FDFCF9; --paper:#FFFFFF; --ink:#262220; --body:#55504B; --soft:#948C83; --bordo:#710C04; --hair:#E9E4DC; --wash:#F7F3EC; --ok:#4A7556;
+  --serif:'Libre Baskerville',Georgia,serif; --sans:'Inter',system-ui,-apple-system,sans-serif; --hand:'Denistina',cursive;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--milk);color:var(--body);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;padding:0 18px;padding-block:0 48px}
+.wrap{max-width:680px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 14px;border-bottom:1px solid var(--hair)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo img{height:24px;width:auto;display:block}
+.logo span{font-style:italic;font-size:14px;color:var(--soft)}
+.back{display:inline-block;margin:22px 0 26px;color:var(--bordo);text-decoration:none;font-size:14px;font-weight:500;border-bottom:1px solid transparent;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;padding:0;font-family:var(--sans)}
+.back:hover{border-bottom-color:var(--bordo)}
+.badge{display:block;font-size:10.5px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--bordo);margin-bottom:12px}
+h1,h2,h3{font-family:var(--serif);color:var(--ink);margin:0;font-weight:700;line-height:1.3;text-wrap:balance}
+h1{font-size:clamp(25px,6.4vw,34px);margin-bottom:16px}
+h1 em,h2 em{font-style:italic;font-weight:400;color:var(--bordo)}
+h2{font-size:20px;margin:40px 0 14px}
+h3{font-size:16.5px;margin:0 0 6px}
+p{margin:0 0 14px}
+.lead{font-size:17px;color:var(--ink);margin-bottom:26px}
+b,strong{color:var(--ink);font-weight:600}
+a{color:var(--bordo)}
+.muted{color:var(--soft);font-size:14px}
+
+/* нумерованные пункты */
+ol.steps{list-style:none;margin:0 0 18px;padding:0;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding:14px 0 14px 48px;border-top:1px solid var(--hair)}
+ol.steps>li:last-child{border-bottom:1px solid var(--hair)}
+ol.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:13px;font-family:var(--serif);font-size:17px;color:var(--bordo)}
+ul.dots{margin:0 0 18px;padding:0 0 0 20px}
+ul.dots li{margin:4px 0}
+ul.dots li::marker{color:var(--bordo)}
+
+/* серые блоки */
+.note{background:var(--wash);padding:16px 18px;margin:18px 0;border-left:2px solid var(--bordo)}
+.note p:last-child{margin:0}
+.box{background:#f5f5f5;padding:16px 18px;margin:16px 0}
+.cards{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+@media (min-width:560px){.cards.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--paper);border:1px solid var(--hair);padding:18px}
+.card .k{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--bordo);display:block;margin-bottom:6px}
+.card p:last-child{margin:0}
+.quote{font-family:var(--serif);font-style:italic;color:var(--ink);font-size:15.5px;line-height:1.75;border-left:2px solid var(--bordo);padding:2px 0 2px 16px;margin:14px 0}
+.tag{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--bordo);border:1px solid var(--bordo);padding:1px 7px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+
+/* чек-лист */
+.check{list-style:none;margin:0 0 10px;padding:0}
+.check li{border-top:1px solid var(--hair)}
+.check li:last-child{border-bottom:1px solid var(--hair)}
+.check label{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;cursor:pointer}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;margin:2px 0 0;border:1.5px solid var(--soft);background:var(--paper);cursor:pointer;display:grid;place-content:center}
+.check input::before{content:"";width:12px;height:7px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.check input:checked{background:var(--bordo);border-color:var(--bordo)}
+.check input:checked::before{opacity:1}
+.check input:checked+span{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--hair)}
+.checkbar{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;color:var(--soft);margin:6px 0 20px}
+.checkbar button{background:none;border:0;color:var(--soft);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+.done-msg{color:var(--ok);font-weight:500}
+
+/* таблицы */
+.tablewrap{overflow-x:auto;margin:14px 0 10px;border:1px solid var(--hair);background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.5}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--hair)}
+th{font-weight:600;color:var(--ink);background:#f5f5f5;font-size:13px}
+tr:last-child td{border-bottom:0}
+td.ph{color:var(--soft);font-style:italic}
+
+/* кнопки и копирование */
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--bordo);color:#fff;border:0;padding:12px 18px;font:500 14.5px var(--sans);cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--bordo);border:1px solid var(--bordo)}
+.btn+.btn{margin-left:8px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.copy{margin:16px 0}
+.copy pre{white-space:pre-wrap;word-wrap:break-word;background:#f5f5f5;padding:16px 18px;margin:0 0 10px;font:14.5px/1.65 var(--sans);color:var(--ink)}
+.copy .t{font-size:13px;color:var(--soft);margin-bottom:6px}
+
+/* ссылки-списки */
+.links{list-style:none;margin:0 0 18px;padding:0}
+.links li{border-top:1px solid var(--hair)}
+.links li:last-child{border-bottom:1px solid var(--hair)}
+.links a{display:flex;justify-content:space-between;gap:14px;padding:13px 2px;text-decoration:none;color:var(--ink)}
+.links a span.s{color:var(--soft);font-size:13.5px}
+.links a::after{content:"→";color:var(--bordo)}
+
+/* схема-цепочка */
+.flow{list-style:none;margin:16px 0;padding:0}
+.flow li{background:var(--paper);border:1px solid var(--hair);padding:14px 16px;position:relative}
+.flow li+li{margin-top:26px}
+.flow li+li::before{content:"↓";position:absolute;top:-24px;left:50%;transform:translateX(-50%);color:var(--bordo);font-size:16px}
+.flow .n{font-family:var(--serif);color:var(--bordo);margin-right:8px}
+.flow .s{display:block;font-size:14px;color:var(--soft);margin-top:2px}
+
+/* карта модулей */
+.map{list-style:none;margin:16px 0;padding:0}
+.map li{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding:14px 0;border-top:1px solid var(--hair)}
+.map li:last-child{border-bottom:1px solid var(--hair)}
+.map .num{font-family:var(--serif);font-size:22px;color:var(--bordo);line-height:1.2}
+.map .who{font-family:var(--serif);color:var(--ink);font-weight:700}
+.map .mod{font-size:13.5px;color:var(--soft);font-style:italic}
+.map .res{margin-top:2px}
+
+audio{width:100%;margin:10px 0 6px}
+.transcript p{font-size:15px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+footer .muted{margin:0}
+.hand{font-family:var(--hand);color:var(--bordo);font-size:34px;line-height:1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.back,.btn,.checkbar button,.top{display:none}}
+td:empty::before{content:"\00a0"}
