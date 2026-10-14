@@ -197,3 +197,13 @@
     render();
   })();
 })();
+
+/* защита: копировать можно только кнопками кабинета и из полей ввода */
+(function () {
+  const okField = t => t && t.closest && t.closest('input,textarea,select,[contenteditable]');
+  ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!okField(e.target)) e.preventDefault(); }));
+  document.addEventListener('contextmenu', e => { if (!okField(e.target)) e.preventDefault(); });
+  document.addEventListener('dragstart', e => { if (!okField(e.target)) e.preventDefault(); });
+  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && ['s', 'p', 'u'].includes(e.key.toLowerCase())) e.preventDefault(); });
+  setInterval(() => { document.querySelectorAll('.video .vwm').forEach(w => { w.style.top = (8 + Math.random() * 70) + '%'; w.style.left = (5 + Math.random() * 55) + '%'; }); }, 15000);
+})();

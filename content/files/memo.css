@@ -113,3 +113,7 @@ footer .muted{margin:0}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @media print{.back,.btn,.checkbar button,.top{display:none}}
 td:empty::before{content:"\00a0"}
+
+/* защита */
+body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}

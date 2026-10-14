@@ -178,7 +178,7 @@
 
   function videoBlock(x) {
     const id = x.video && x.video.kinescope_id, label = x.format === 'audio' ? 'подкаст' : 'урок';
-    if (id) return `<div class="video"><iframe src="${esc(CONFIG.KINESCOPE_EMBED + id)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="${esc(x.title)}"></iframe></div>`;
+    if (id) { const who = [App.c.profile.email, App.c.profile.nick].filter(Boolean).join(' · '); return `<div class="video"><iframe src="${esc(CONFIG.KINESCOPE_EMBED + id)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="${esc(x.title)}"></iframe><span class="vwm">${esc(who)}</span></div>`; }
     return `<div class="video"><button class="playbtn" disabled style="opacity:.7">${ico('play')} ${label}${x.minutes ? ' · ' + x.minutes + ' мин' : ''}</button><span class="lbl" style="position:absolute;left:14px;bottom:10px">видео появится здесь</span><span class="wm">${esc(App.c.profile.nick || '')} · защищено</span></div>`;
   }
 

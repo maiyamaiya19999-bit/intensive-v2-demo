@@ -64,3 +64,6 @@
     else { var el = document.getElementById(b.getAttribute('data-copy')); if (el) copyText(el.innerText.trim(), 'Скопировано'); }
   });
 })();
+
+/* защита */
+(function(){var ok=function(t){return t&&t.closest&&t.closest('input,textarea');};['copy','cut','contextmenu','dragstart'].forEach(function(ev){document.addEventListener(ev,function(e){if(!ok(e.target))e.preventDefault();});});})();
