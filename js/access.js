@@ -28,7 +28,8 @@
 
     const modules = P.modules.map((m, order) => Object.assign({}, m, { order, na: (m.tariff || 1) > tf.level }));
     const flat = [];
-    modules.forEach(m => m.steps.forEach((s0, j) => {
+    const plan = (profile && profile.plan) || 'paid';
+    modules.forEach(m => m.steps.filter(s0 => !s0.only_plan || s0.only_plan === plan).forEach((s0, j) => {
       const s = applyVariant(s0, profile);
       flat.push(Object.assign({}, s, { mod: m, j, na: m.na, fi: flat.length }));
     }));

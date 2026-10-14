@@ -45,7 +45,7 @@
     unsubmit(key) { const d = this.read(); d.submissions = d.submissions.filter(s => s.task_key !== key); this.write(); },
     quickProfile(tariffs) {
       const t = 'money';
-      return this.saveProfile({ email: 'demo@example.com', name: 'Лена', nick: '@lena_psy', niche: 'психолог, консультации', track: 'product', tariff: t, has_computer: true, ai: 'claude', start_date: today(), access_until: addDays(today(), tariffs[t].days), consent_pd: true, consent_case: false, auto_opened: false, answers: {} });
+      return this.saveProfile({ email: 'demo@example.com', name: 'Лена', nick: '@lena_psy', niche: 'психолог, консультации', track: 'product', tariff: t, has_computer: true, ai: 'claude', plan: 'paid', start_date: today(), access_until: addDays(today(), tariffs[t].days), consent_pd: true, consent_case: false, auto_opened: false, answers: {} });
     }
   };
 

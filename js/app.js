@@ -116,7 +116,7 @@
     const fd = new FormData(form), answers = {};
     for (const [k, v] of fd.entries()) { if (answers[k] === undefined) answers[k] = v; else answers[k] = [].concat(answers[k], v); }
     ['pains', 'tried'].forEach(k => { answers[k] = answers[k] ? [].concat(answers[k]) : []; });
-    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: answers.track || 'life', has_computer: answers.computer !== 'Только телефон', ai: answers.ai || 'none', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
+    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: answers.track || 'life', has_computer: answers.device !== 'phone', ai: answers.ai === 'want_claude' ? 'claude' : (answers.ai || 'none'), plan: answers.plan || 'want_paid', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
     if (App.mode === 'demo' && !(App.profile && App.profile.tariff)) {
       const t = 'money', today = new Date(), until = new Date(today.getTime() + App.P.tariffs[t].days * 86400000);
       Object.assign(patch, { email: 'demo@example.com', tariff: t, start_date: today.toISOString().slice(0, 10), access_until: until.toISOString().slice(0, 10), auto_opened: false });
@@ -175,7 +175,7 @@
   document.addEventListener('change', async e => {
     const t = e.target;
     if (t.classList.contains('selfcheck')) { const all = [...document.querySelectorAll('.selfcheck')].every(c => c.checked); const btn = $('submitHw'); if (btn) btn.disabled = !all; return; }
-    if (t.name === 'track' || t.name === 'ai') { document.querySelectorAll(`input[name=${t.name}]`).forEach(i => i.closest('.opt').classList.toggle('on', i.checked)); return; }
+    if (['track','ai','device','plan'].includes(t.name)) { document.querySelectorAll(`input[name=${t.name}]`).forEach(i => i.closest('.opt').classList.toggle('on', i.checked)); return; }
     if (t.id === 'consentCase') { await Store.saveProfile({ consent_case: t.checked }); await loadData(); toast(t.checked ? 'Спасибо, согласие сохранено' : 'Согласие отозвано'); return; }
   });
   let ticking = false; window.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { document.documentElement.style.setProperty('--py', String(window.scrollY)); ticking = false; }); }, { passive: true });

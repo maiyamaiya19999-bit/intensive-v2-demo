@@ -15,6 +15,9 @@
     if (name === 'НИША') return p.niche || '';
     if (name === 'ПРАВИЛА_ПИСЬМА') return rules || '';
     if (name === 'ПРИМЕРЫ') return c.tr.examples || '';
+    if (p.plan === 'free' && (name === 'РАСПАКОВКА' || name === 'АУДИТОРИЯ') && c.subMap.passport) {
+      return name === 'РАСПАКОВКА' ? (c.subMap.passport.latest.text || '') : ' ';
+    }
     const key = Object.keys(c.P.tasks).find(k => c.P.tasks[k].placeholder === name);
     if (!key) return null;
     const m = c.subMap[key];

@@ -15,6 +15,7 @@ create table if not exists public.users_profile (
   tariff           text not null default 'grow' check (tariff in ('grow','money','vip')),
   has_computer     boolean,
   ai               text check (ai in ('claude','chatgpt','none')),          -- в какой нейросети работает
+  plan          text default 'want_paid',  -- paid / want_paid / free (free → «паспорт» вместо полных файлов)
   start_date       date not null default current_date,
   access_until     date not null default current_date + 45,
   consent_pd       boolean not null default false,         -- согласие на обработку ПД
