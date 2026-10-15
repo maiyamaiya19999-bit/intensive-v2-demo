@@ -26,10 +26,10 @@
     const prog = {};
     (progress || []).forEach(p => { prog[p.step_id] = p; });
 
-    const modules = P.modules.map((m, order) => Object.assign({}, m, { order, na: (m.tariff || 1) > tf.level }));
+    const modules = P.modules.map((m, order) => Object.assign({}, m, (m.by_tariff && m.by_tariff[String(tf.level)]) || {}, { order, na: (m.tariff || 1) > tf.level }));
     const flat = [];
     const plan = (profile && profile.plan) || 'paid';
-    modules.forEach(m => m.steps.filter(s0 => (!s0.only_plan || s0.only_plan === plan) && ![].concat(s0.skip_plan || []).includes(plan)).forEach((s0, j) => {
+    modules.forEach(m => m.steps.filter(s0 => (!s0.only_plan || s0.only_plan === plan) && ![].concat(s0.skip_plan || []).includes(plan) && (!s0.only_tariff || tf.level >= s0.only_tariff)).forEach((s0, j) => {
       const s = applyVariant(s0, profile);
       flat.push(Object.assign({}, s, { mod: m, j, na: m.na, fi: flat.length }));
     }));

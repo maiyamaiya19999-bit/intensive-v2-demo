@@ -116,7 +116,7 @@
     const fd = new FormData(form), answers = {};
     for (const [k, v] of fd.entries()) { if (answers[k] === undefined) answers[k] = v; else answers[k] = [].concat(answers[k], v); }
     ['pains', 'tried'].forEach(k => { answers[k] = answers[k] ? [].concat(answers[k]) : []; });
-    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: answers.track || 'life', has_computer: answers.device !== 'phone', ai: answers.ai === 'want_claude' ? 'claude' : (answers.ai || 'none'), plan: answers.plan || 'want_paid', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
+    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: (App.c && App.c.tf && App.c.tf.level >= 2) ? 'product' : (answers.track || 'life'), has_computer: answers.device !== 'phone', ai: answers.ai === 'want_claude' ? 'claude' : (answers.ai || 'none'), plan: answers.plan || 'want_paid', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
     if (App.mode === 'demo' && !(App.profile && App.profile.tariff)) {
       const t = 'money', today = new Date(), until = new Date(today.getTime() + App.P.tariffs[t].days * 86400000);
       Object.assign(patch, { email: 'demo@example.com', tariff: t, start_date: today.toISOString().slice(0, 10), access_until: until.toISOString().slice(0, 10), auto_opened: false });

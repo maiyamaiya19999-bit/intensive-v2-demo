@@ -30,13 +30,13 @@
     const opt = (name, v, txt, cur) => `<label class="opt ${cur === v ? 'on' : ''}"><input type="radio" name="${name}" value="${v}" ${cur === v ? 'checked' : ''}><span>${txt}</span></label>`;
     const cb = (arr, id) => arr.map((x, i) => `<label class="opt"><input type="checkbox" name="${id}" value="${esc(x)}" ${(a[id] || []).includes(x) ? 'checked' : ''}><span>${x}</span></label>`).join('');
     const sel = (id, opts, cur) => `<select name="${id}">${opts.map(o => `<option ${cur === o ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
-    const track = (App.c.profile && App.c.profile.track) || 'product';
+    const track = (App.c.profile && App.c.profile.track) || 'expert';
     return `
     <div class="band tall" ${bg('l')}><span class="big">01</span><div class="kicker"><span class="badge">Перед входом · три минуты</span></div><h1>Ответь на вопросы, и кабинет <em>настроится под тебя</em></h1><p>Три минуты. По ответам кабинет покажет только то, что нужно именно тебе.</p></div>
     <form id="anketaForm" class="section" style="gap:26px">
     <div class="section"><div class="divider">О тебе</div>
       <div class="field"><label class="q"><b>1</b>Имя и ник в Instagram или Telegram</label><div class="grid2"><input type="text" name="name" required placeholder="Лена" value="${esc(a.name || '')}"><input type="text" name="nick" placeholder="@lena_psy" value="${esc(a.nick || '')}"></div></div>
-      <div class="field"><label class="q"><b>2</b>Какой блог ты строишь?</label><div class="opts">${opt('track', 'life', 'Про мою жизнь. Хочу подписчиков и раскрыть себя', track)}${opt('track', 'expert', 'Про жизнь и мою тему. Продукта пока нет', track)}${opt('track', 'product', 'С продуктом или услугой: уже есть или хочу создать', track)}</div><div class="hint">От этого ответа зависит, какие примеры ты увидишь.</div></div>
+      <div class="field"><label class="q"><b>2</b>О чём твой блог?</label><div class="opts">${opt('track', 'life', 'Про мою жизнь: хочу подписчиков и показать себя', track === 'product' ? 'expert' : track)}${opt('track', 'expert', 'Про мою тему: я в чём-то разбираюсь и хочу этим делиться', track === 'product' ? 'expert' : track)}</div><div class="hint">От этого ответа зависит, какие примеры ты увидишь. Продавать или нет, решает твой тариф.</div></div>
       <div class="field"><label class="q"><b>3</b>Тема блога и что продаёшь, если есть</label><input type="text" name="niche" required placeholder="Нутрициолог, консультации по 4.000 ₽" value="${esc(a.niche || '')}"><div class="hint">Это подставится во все готовые сообщения для нейросети.</div></div>
     </div>
     <div class="section"><div class="divider">Как будешь работать</div>
@@ -75,7 +75,7 @@
     if (c.autoOpened && tf.key !== 'vip') html += `<div class="note">Ты ничего не сдавала ${P.auto_open_days} дней, поэтому все шаги открыты, а доступ продлён на ${P.auto_extend_days} дней. Задания всё равно лучше сдать: без них ассистенты не узнают тебя.</div>`;
 
     const mods = c.modules;
-    const intro = mods.filter(m => m.intro), base = mods.filter(m => !m.intro && (m.tariff || 1) === 1 && !m.final), money = mods.filter(m => (m.tariff || 1) >= 2), fin = mods.filter(m => m.final);
+    const intro = mods.filter(m => m.intro), base = mods.filter(m => !m.intro && !m.final && !m.na), money = mods.filter(m => (m.tariff || 1) >= 2), fin = mods.filter(m => m.final);
     const card = (m, cls = '') => {
       const st = Access.modState(c, m), n = m.steps.length, mins = m.steps.reduce((a, s) => a + (s.minutes || 0), 0);
       const foot = st === 'na' ? `<span>${micon('close')}в тарифе выше</span>` : st === 'locked' ? `<span>${micon('close')}пока закрыт</span>` : st === 'done' ? `<span>${ico('check')}сделано</span>` : st === 'cur' ? `<span>${ico('check')}ты здесь</span>` : `<span>${ico('check')}можно</span>`;
@@ -83,10 +83,10 @@
     };
     if (intro.length) html += `<div class="sect"><div class="sect-h"><h2>Начни <em>отсюда</em></h2></div><div class="grid">${intro.map(m => card(m, 'wide')).join('')}</div></div>`;
     html += `<div class="sect"><div class="sect-h"><h2>Твоя <em>команда</em></h2><span class="meta">${base.length} ${plural(base.length, 'сотрудник', 'сотрудника', 'сотрудников')}</span></div><div class="grid">${base.map(m => card(m)).join('')}</div></div>`;
-    html += `<div class="sect"><div class="sect-h"><h2>Деньги <em>с блога</em></h2><span class="meta">${tf.level >= 2 ? money.length + ' ' + plural(money.length, 'сотрудник', 'сотрудника', 'сотрудников') : 'в тарифе Рост и доход'}</span></div><div class="grid">${money.map(m => card(m)).join('')}</div></div>`;
+    if (tf.level < 2) html += `<div class="sect"><div class="sect-h"><h2>Блог <em>как бизнес</em></h2><span class="meta">в тарифе ${esc(P.tariffs.money.name)}</span></div>${upgradeCard('Продукт, воронка и прогрев')}</div>`;
     html += `<div class="sect"><div class="sect-h"><h2>Финал</h2></div><div class="grid">${fin.map(m => card(m, 'wide')).join('')}</div></div>`;
     html += `<div class="links">
-      <a class="linkcard" href="#services"><span class="ic">${ico('gift')}</span><span><div class="t">Бонусы</div><div class="s">${tf.level >= 2 ? P.bonuses.length + ' бонусов открыты' : 'доступны в тарифе Рост и доход'}</div></span><span class="go">${ico('arrow')}</span></a>
+      <a class="linkcard" href="#services"><span class="ic">${ico('gift')}</span><span><div class="t">Бонусы</div><div class="s">${tf.level >= 2 ? P.bonuses.length + ' бонусов открыты' : 'доступны в тарифе Блог как бизнес'}</div></span><span class="go">${ico('arrow')}</span></a>
       ${link(CONFIG.LINKS.chat, `<span class="ic">${ico('chat')}</span><span><div class="t">Чат участниц</div><div class="s">вопросы и ответы, Майя в чате</div></span><span class="go">${ico('arrow')}</span>`, 'linkcard')}
       ${link(CONFIG.LINKS.support, `<span class="ic">${ico('user')}</span><span><div class="t">Поддержка</div><div class="s">${esc(P.support.hours)}</div></span><span class="go">${ico('arrow')}</span>`, 'linkcard')}
     </div>`;
@@ -99,7 +99,7 @@
   }
   function upgradeCard(what) {
     const P = App.P, tf = App.c.tf;
-    return `<div class="card key"><span class="badge">${what} нет в твоём тарифе</span><h3>Есть в тарифе <em>${esc(P.tariffs.money.name)}</em></h3><div>Три сотрудника о том, как блог приносит деньги, плюс ${P.bonuses.length} бонусов и доступ на 6 месяцев.${tf.upgrade_price ? ` Доплата ${tf.upgrade_price}, в любой момент.` : ''}</div>${CONFIG.LINKS.upgrade ? `<div><a class="btn" href="${esc(CONFIG.LINKS.upgrade)}" target="_blank" rel="noopener">Перейти на тариф выше</a></div>` : ''}</div>`;
+    return `<div class="card key"><span class="badge">${what} нет в твоём тарифе</span><h3>Есть в тарифе <em>${esc(P.tariffs.money.name)}</em></h3><div>Продукт и оффер, бесплатный урок с ботом, прогрев на месяц, плюс ${P.bonuses.length} бонусов и доступ на 6 месяцев.${tf.upgrade_price ? ` Доплата ${tf.upgrade_price}, в любой момент.` : ''}</div>${CONFIG.LINKS.upgrade ? `<div><a class="btn" href="${esc(CONFIG.LINKS.upgrade)}" target="_blank" rel="noopener">Перейти на тариф выше</a></div>` : ''}</div>`;
   }
   function lockedCard() {
     const c = App.c, lk = Access.lockStep(c);
@@ -112,7 +112,7 @@
     const c = App.c, mods = c.modules, m = mods.find(x => x.id === App.S.modId) || mods[0];
     const st = Access.modState(c, m), L = c.flat.filter(x => x.mod.id === m.id);
     const n = L.length, mins = L.reduce((a, s) => a + (s.minutes || 0), 0), hws = L.filter(s => s.task).length;
-    const kicker = m.intro ? 'Начни отсюда' : (m.tariff || 1) >= 2 ? 'Деньги с блога' : m.final ? 'Финал' : 'Твоя команда';
+    const kicker = m.intro ? 'Начни отсюда' : (m.tariff || 1) >= 2 ? 'Блог как бизнес' : m.final ? 'Финал' : 'Твоя команда';
     let html = `<div class="lnav"><button class="linkbtn" data-screen="home">← Все модули</button><span class="meta">${m.intro ? 'вводный' : 'модуль ' + m.id + ' из ' + mods.filter(x => !x.intro).length}</span></div>
     <div class="band" ${bg(m.img)}><span class="big">${pad(m.id)}</span><div class="kicker"><span class="badge">${kicker}${m.employee && !m.intro ? ' · ' + esc(m.employee) : ''}</span></div><h1>${esc(m.title)}</h1></div>
     <div class="promise">${esc(m.desc)}</div>
@@ -229,7 +229,7 @@
     const c = App.c, P = App.P;
     let html = `<div class="band" ${bg('n')}><span class="big">00</span><div class="kicker"><span class="badge">Можно смотреть всегда</span></div><h1>Сервисы</h1><p>Ссылки на всё, что понадобится по ходу. Заданий здесь нет.</p></div>`;
     P.services.forEach(g => { html += `<div class="sgroup"><div class="divider">${esc(g.group)}</div><div class="sgrid">${g.items.map(x => link(x.url, `<span class="sname">${esc(x.name)}</span><span class="ssub">${esc(x.desc)}</span><span class="sfoot"><span class="smeta">${x.when ? 'понадобится в ' + esc(x.when.replace('модуль', 'модуле')) : 'с первого дня'}</span><span class="sgo">${ico('arrow')}</span></span>`, 'scard')).join('')}</div></div>`; });
-    html += `<div class="sgroup"><div class="divider">Бонусы</div><div class="meta">${c.tf.level >= 2 ? 'Открыты на твоём тарифе' : 'Открываются в тарифе Рост и доход'}</div><div>${P.bonuses.map(b => `<div class="bonus"><span class="ic">${ico('gift')}</span><span><div class="t">${c.tf.level >= 2 && b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(b.title)}</a>` : esc(b.title)}</div><div class="s">${esc(b.desc)}${c.tf.level >= 2 && !b.url ? ' · скоро' : ''}</div></span></div>`).join('')}</div></div>`;
+    html += `<div class="sgroup"><div class="divider">Бонусы</div><div class="meta">${c.tf.level >= 2 ? 'Открыты на твоём тарифе' : 'Открываются в тарифе Блог как бизнес'}</div><div>${P.bonuses.map(b => `<div class="bonus"><span class="ic">${ico('gift')}</span><span><div class="t">${c.tf.level >= 2 && b.url ? `<a href="${esc(b.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(b.title)}</a>` : esc(b.title)}</div><div class="s">${esc(b.desc)}${c.tf.level >= 2 && !b.url ? ' · скоро' : ''}</div></span></div>`).join('')}</div></div>`;
     html += `<div class="meta">${esc(P.support.note_partner)}</div>`;
     return html;
   }

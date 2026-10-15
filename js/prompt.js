@@ -15,7 +15,8 @@
     if (name === 'НИША') return p.niche || '';
     if (name === 'ПРАВИЛА_ПИСЬМА') return rules || '';
     if (name === 'ПРИМЕРЫ') return c.tr.examples || '';
-    if (p.plan === 'free' && (name === 'РАСПАКОВКА' || name === 'АУДИТОРИЯ') && c.subMap.passport) {
+    if (p.plan === 'free' && ['РАСПАКОВКА', 'АУДИТОРИЯ', 'ПОЗИЦИОНИРОВАНИЕ', 'ПРОДУКТ'].includes(name) && c.subMap.passport) {
+      /* бесплатная нейросеть: вместо четырёх длинных файлов один паспорт, он уже включает и позиционирование, и продукт */
       return name === 'РАСПАКОВКА' ? (c.subMap.passport.latest.text || '') : ' ';
     }
     const key = Object.keys(c.P.tasks).find(k => c.P.tasks[k].placeholder === name);
@@ -52,7 +53,7 @@
       if (v === null) return all;
       if (!v) {
         const key = Object.keys(c.P.tasks).find(k => c.P.tasks[k].placeholder === name);
-        if (key) { const st = Access.stepOfTask(c, key); missing.push({ key, name: c.P.tasks[key].name, step: st }); return `[здесь будет твой файл «${c.P.tasks[key].name}»]`; }
+        if (key) { const st = Access.stepOfTask(c, key); if (!st) return `[файла «${c.P.tasks[key].name}» нет: блог без продукта]`; missing.push({ key, name: c.P.tasks[key].name, step: st }); return `[здесь будет твой файл «${c.P.tasks[key].name}»]`; }
         return '';
       }
       return v.trim();
