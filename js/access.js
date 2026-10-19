@@ -1,15 +1,21 @@
 /* Правила доступа. Чистые функции без обращения к сети.
    Контекст ctx = { P: программа, profile, subs: сданные задания, progress } собирается в Access.ctx().
    Правила:
-   - модули с tariff: 2 закрыты на тарифе «Рост» (состояние 'na');
+   - модули с tariff: 2 закрыты на тарифе «Растущий блог» (состояние 'na');
    - замки: шаги после первого несданного задания с lock:true закрыты ('locked');
    - VIP и «автооткрытие через 14 дней без сдач» снимают замки;
-   - правки задания: 1 раз на «Рост», 2 раза на «Рост и доход»;
+   - правки задания: 1 раз на «Растущем блоге», 2 раза на «Блоге как бизнес»;
    - срок доступа: после access_until кабинет только для чтения. */
 (function () {
   const DAY = 86400000;
   const tariffOf = (P, profile) => { const k = (profile && profile.tariff) || 'grow'; return Object.assign({ key: k }, P.tariffs[k] || P.tariffs.grow); };
-  const trackOf = (P, profile) => { const k = (profile && profile.track) || 'life'; return Object.assign({ key: k }, P.tracks[k] || P.tracks.life); };
+  /* направление блога берётся из анкеты (life / expert); продукт добавляет тариф «Блог как бизнес», а не анкета */
+  const trackOf = (P, profile, tf) => {
+    let k = (profile && profile.track) || 'life'; if (k === 'product' || !P.tracks[k]) k = k === 'product' ? 'expert' : 'life';
+    const base = Object.assign({ key: k }, P.tracks[k]);
+    if (tf && tf.level >= 2 && P.tracks.product) Object.assign(base, { name: base.name + ' + продукт', examples: base.examples + ' и из работы с людьми', from: P.tracks.product.from });
+    return base;
+  };
 
   /* шаг с учётом варианта по нейросети (claude / chatgpt / none) */
   function applyVariant(step, profile) {
@@ -20,7 +26,7 @@
   }
 
   function ctx(P, profile, subs, progress) {
-    const tf = tariffOf(P, profile), tr = trackOf(P, profile);
+    const tf = tariffOf(P, profile), tr = trackOf(P, profile, tf);
     const subMap = {};
     (subs || []).forEach(s => { const m = subMap[s.task_key] || (subMap[s.task_key] = { count: 0, latest: null }); m.count++; if (!m.latest || s.created_at > m.latest.created_at) m.latest = s; });
     const prog = {};

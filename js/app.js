@@ -69,7 +69,7 @@
     if (App.mode !== 'demo' || !App.S.demoBar) return;
     const P = App.P, p = App.profile || {}, c = App.c;
     if (!App.profile) { d.innerHTML = `<span class="lbl">демо</span><button data-demo-quick="1">Заполнить анкету за меня</button>`; return; }
-    d.innerHTML = `<span class="lbl">трек</span>${Object.entries(P.tracks).map(([k, v]) => `<button data-demo-track="${k}" class="${p.track === k ? 'on' : ''}">${esc(v.name)}</button>`).join('')}
+    d.innerHTML = `<span class="lbl">о чём блог</span>${Object.entries(P.tracks).filter(([k]) => k !== 'product').map(([k, v]) => `<button data-demo-track="${k}" class="${p.track === k ? 'on' : ''}">${esc(v.name)}</button>`).join('')}
       <span class="lbl">тариф</span>${Object.entries(P.tariffs).map(([k, v]) => `<button data-demo-tariff="${k}" class="${p.tariff === k ? 'on' : ''}">${esc(v.name)}</button>`).join('')}
       <span class="lbl">сдано</span>${Object.entries(P.tasks).filter(([, v]) => v.lock).map(([k, v]) => `<button data-demo-task="${k}" class="${c.subMap[k] ? 'on' : ''}">${esc(v.name)}</button>`).join('')}
       <button data-demo-idle="1" class="${p.auto_opened ? 'on' : ''}">14 дней без сдач</button><button data-demo-expired="1" class="${c.expired ? 'on' : ''}">доступ истёк</button>
@@ -116,7 +116,7 @@
     const fd = new FormData(form), answers = {};
     for (const [k, v] of fd.entries()) { if (answers[k] === undefined) answers[k] = v; else answers[k] = [].concat(answers[k], v); }
     ['pains', 'tried'].forEach(k => { answers[k] = answers[k] ? [].concat(answers[k]) : []; });
-    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: (App.c && App.c.tf && App.c.tf.level >= 2) ? 'product' : (answers.track || 'life'), has_computer: answers.device !== 'phone', ai: answers.ai === 'want_claude' ? 'claude' : (answers.ai || 'none'), plan: answers.plan || 'want_paid', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
+    const patch = { name: answers.name, nick: answers.nick || '', niche: answers.niche, track: answers.track || 'life', has_computer: answers.device !== 'phone', ai: answers.ai === 'want_claude' ? 'claude' : (answers.ai || 'none'), plan: answers.plan || 'want_paid', consent_pd: !!fd.get('consent_pd'), consent_case: !!fd.get('consent_case'), answers };
     if (App.mode === 'demo' && !(App.profile && App.profile.tariff)) {
       const t = 'money', today = new Date(), until = new Date(today.getTime() + App.P.tariffs[t].days * 86400000);
       Object.assign(patch, { email: 'demo@example.com', tariff: t, start_date: today.toISOString().slice(0, 10), access_until: until.toISOString().slice(0, 10), auto_opened: false });
@@ -163,6 +163,7 @@
     if (b = q('[data-edit]')) { if (b.disabled) return; App.S.editing = b.dataset.edit; render(); return; }
     if (b = q('[data-cancel-edit]')) { App.S.editing = null; render(); return; }
     if (b = q('[data-download-all]')) { downloadAll(); return; }
+    if (b = q('[data-pack]')) { (b.dataset.pack === 'zip' ? Pack.downloadZip(App.c) : Pack.downloadTxt(App.c)).then(err => toast(err || 'Пакет скачан')).catch(e => toast('Не получилось собрать пакет: ' + e.message)); return; }
     if (b = q('[data-file-of]')) { e.preventDefault(); const s = App.c.subMap[b.dataset.fileOf]; const url = s && await Store.fileUrl(s.latest); if (url) window.open(url, '_blank'); else toast('Файл недоступен'); return; }
     if (b = q('[data-signout]')) { await Store.signOut(); App.profile = null; location.hash = '#home'; render(); return; }
   });

@@ -29,7 +29,7 @@ create table if not exists public.users_profile (
 );
 
 -- ---------- сданные задания ----------
--- Каждая сдача — новая строка (версия). Лимит правок по тарифу считает приложение: 1 правка на «Рост», 2 на «Рост и доход».
+-- Каждая сдача — новая строка (версия). Лимит правок по тарифу считает приложение: 1 правка на «Растущем блоге», 2 на «Блоге как бизнес».
 create table if not exists public.submissions (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null references public.users_profile(id) on delete cascade,

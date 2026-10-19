@@ -32,6 +32,18 @@
     else fallback();
   }
 
+  // Бонусы тарифа «Блог как бизнес»: на тарифе «Растущий блог» (?t=grow) вместо памятки короткая заглушка
+  var BONUS = ['50-reels', 'akkaunt-pod-zashchitoy', 'neyrofoto', 'put-cheloveka', 'raspakovka-za-vecher', 'semochnyy-den-polnyy', 'zakrep'];
+  var fileName = (location.pathname.split('/').pop() || '').replace('.html', '');
+  if (BONUS.indexOf(fileName) >= 0 && /[?&]t=grow\b/.test(location.search)) {
+    var main = document.querySelector('main') || document.body;
+    main.innerHTML = '<div style="max-width:560px;margin:60px auto;padding:0 16px;font-family:Inter,system-ui,sans-serif">' +
+      '<h1 style="font-family:\'Libre Baskerville\',serif;font-weight:400;font-size:26px;margin:0 0 14px">Это бонус тарифа «Блог как бизнес»</h1>' +
+      '<p style="line-height:1.6;color:#444">Он откроется, если перейти на тариф выше. Перейти можно в любой момент в кабинете, на главной, в блоке «Блог как бизнес».</p>' +
+      '<p><a href="#" onclick="return goBack()" style="color:#710C04">← Вернуться в кабинет</a></p></div>';
+    return;
+  }
+
   // Чек-листы: состояние каждой галочки в localStorage
   var page = document.body.getAttribute('data-page') || 'memo';
   document.querySelectorAll('ul.check').forEach(function (list) {
