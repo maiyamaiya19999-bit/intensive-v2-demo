@@ -22,7 +22,7 @@
 
   function anketa(c) {
     const p = c.profile || {}, a = p.answers || {};
-    const lines = ['# Анкета', '', `Имя: ${p.name || ''}`, `Ник: ${p.nick || ''}`, `Ниша: ${p.niche || ''}`, `О чём блог: ${c.tr.name}`, `Тариф: ${c.tf.name}`, `Устройство: ${p.has_computer === false ? 'телефон' : 'компьютер'}`, `Нейросеть: ${p.ai || ''}`, `Подписка: ${p.plan || ''}`, '', '## Все ответы анкеты', ''];
+    const lines = ['# Анкета', '', `Имя: ${p.name || ''}`, `Ник: ${p.nick || ''}`, `Ниша: ${p.niche || ''}`, `О чём блог: ${c.tr.name}`, `Тариф: ${c.tf.name}`, `Устройство: ${p.has_computer === false ? 'телефон' : 'компьютер'}`, `Нейросеть: ${({ claude: 'Claude', chatgpt: 'ChatGPT', none: 'пока нет' })[p.ai] || p.ai || ''}`, `Подписка: ${({ paid: 'платная', want_paid: 'хочу платную', free: 'бесплатная' })[p.plan] || p.plan || ''}`, '', '## Все ответы анкеты', ''];
     Object.keys(a).forEach(k => { const v = a[k]; if (v === '' || v == null || k.startsWith('consent')) return; lines.push(`${k}: ${[].concat(v).join(', ')}`); });
     return lines.join('\n') + '\n';
   }

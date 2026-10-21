@@ -9,13 +9,13 @@
   function placeholders(text) { const out = new Set(); let m; while ((m = RE.exec(text))) out.add(m[1]); RE.lastIndex = 0; return [...out]; }
 
   /* значение плейсхолдера: из задания, из анкеты или из общего файла правил */
-  function valueOf(name, c, rules) {
+  function valueOf(name, c, rules, assistantId) {
     const p = c.profile || {};
     if (name === 'ИМЯ') return p.name || '';
     if (name === 'НИША') return p.niche || '';
     if (name === 'ПРАВИЛА_ПИСЬМА') return rules || '';
     if (name === 'ПРИМЕРЫ') return c.tr.examples || '';
-    if (p.plan === 'free' && ['РАСПАКОВКА', 'АУДИТОРИЯ'].includes(name) && c.subMap.passport) {
+    if (p.plan === 'free' && ['РАСПАКОВКА', 'АУДИТОРИЯ'].includes(name) && c.subMap.passport && assistantId !== '14_паспорт') { /* сам паспорт всегда собирается из полных файлов */
       /* бесплатная нейросеть: вместо двух самых длинных файлов (распаковка и аудитория) один паспорт.
          Позиционирование, продукт и оффер короткие и собираются после паспорта (шаги 3.1–3.3),
          поэтому они подставляются как есть, своими файлами. */
@@ -53,7 +53,7 @@
     const text = src.replace(RE_LINE, (all, lineName, inlineName) => {
       const name = lineName || inlineName;
       if (inlineName && !INLINE_OK[inlineName]) return all;
-      const v = valueOf(name, c, rules);
+      const v = valueOf(name, c, rules, assistantId);
       if (v === null) return all;
       if (!v) {
         const key = Object.keys(c.P.tasks).find(k => c.P.tasks[k].placeholder === name);
